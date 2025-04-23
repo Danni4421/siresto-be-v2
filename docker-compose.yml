@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: siresto-v2-db
+    env_file:
+      - .env
+      - .docker/database/.env.db
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - siresto_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-siresto} || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  siresto_data:
+    driver: local
