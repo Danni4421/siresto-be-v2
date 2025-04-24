@@ -1,10 +1,10 @@
-module github.com/siresto
+module github.com/Danni4421/siresto-be-v2
 
 go 1.22.2
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/gofiber/fiber/v2 v2.52.6 // indirect
+	github.com/gofiber/fiber/v2 v2.52.6 // direct
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
