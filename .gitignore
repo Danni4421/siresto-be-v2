@@ -1,2 +1,5 @@
 .env
 .env.db
+
+# Air hot reload
+tmp
