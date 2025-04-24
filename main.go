@@ -1,27 +1,32 @@
 package main
 
 import (
-  "github.com/gofiber/fiber/v2"
-  "github.com/gofiber/fiber/v2/middleware/cors"
-  "github.com/gofiber/fiber/v2/middleware/logger"
+	"fmt"
+
+	"github.com/Danni4421/siresto-be-v2/package/configs"
+	"github.com/Danni4421/siresto-be-v2/package/middlewares"
+	"github.com/Danni4421/siresto-be-v2/package/routes"
+	"github.com/Danni4421/siresto-be-v2/package/utils"
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-  f := fiber.New()
-  f.Use(logger.New())
-  f.Use(cors.New(cors.Config{
-    AllowOrigins: "*",
-    AllowMethods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
-    AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-  }))
+	godotenv.Load()
 
-  f.Get("/", func(c *fiber.Ctx) error {
-    return c.SendString("Hello, World!")
-  })
+	configs := configs.FiberConfig()
 
-  err := f.Listen(":5000")
-  
-  if err != nil {
-    panic(err)
-  }
+	app := fiber.New(configs)
+
+	// Bind middlewares
+	middlewares.FiberMiddleware(app)
+
+	// Bind routes
+	routes.PublicRoutes(app)
+
+	err := app.Listen(fmt.Sprintf(":%s", utils.GetEnv("APP_PORT", "8585")))
+
+	if err != nil {
+		panic(err)
+	}
 }
