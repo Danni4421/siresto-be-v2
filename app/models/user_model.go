@@ -7,7 +7,7 @@ type User struct {
 	Name      string    `json:"name" gorm:"type:varchar(255);not null"`
 	Email     string    `json:"email" gorm:"type:varchar(120);not null;unique"`
 	Phone     string    `json:"phone" gorm:"type:varchar(15);not null;unique"`
-	Password  string    `json:"password" gorm:"type:text;not null"`
+	Password  string    `json:"-" gorm:"type:text;not null"`
 	Address   string    `json:"address" gorm:"type:text"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`

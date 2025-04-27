@@ -32,3 +32,21 @@ func (service *UserService) CreateUser(user *models.User) (*models.User, error) 
 
 	return user, nil
 }
+
+func (service *UserService) FindUsers() ([]*models.User, error) {
+	users := []*models.User{}
+
+	if err := service.DB.Select("name", "phone", "email", "created_at").Find(&users).Omit("Password").Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (service *UserService) FindUserByID(id uint) (*models.User, error) {
+	user := &models.User{}
+	if err := service.DB.First(user, id).Error; err != nil {
+		return nil, exceptions.NewNotFound("User not found")
+	}
+	return user, nil
+}

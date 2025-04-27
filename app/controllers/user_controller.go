@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/Danni4421/siresto-be-v2/app/dtos"
 	"github.com/Danni4421/siresto-be-v2/app/models"
 	"github.com/Danni4421/siresto-be-v2/app/services"
@@ -42,6 +44,44 @@ func (controller UserController) Register(c *fiber.Ctx) error {
 				"created_at": user.CreatedAt,
 				"updated_at": user.UpdatedAt,
 			},
+		},
+	})
+}
+
+func (controller UserController) GetUsers(c *fiber.Ctx) error {
+	users, err := controller.UserService.FindUsers()
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Users retrieved successfully",
+		"data": fiber.Map{
+			"users": users,
+		},
+	})
+}
+
+func (controller UserController) GetUserByID(c *fiber.Ctx) error {
+	userID, err := strconv.ParseUint(c.Params("id"), 10, 32)
+
+	if err != nil {
+		return err
+	}
+
+	user, err := controller.UserService.FindUserByID(uint(userID))
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "User retrieved successfully",
+		"data": fiber.Map{
+			"user": user,
 		},
 	})
 }

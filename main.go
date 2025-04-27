@@ -29,6 +29,7 @@ func main() {
 
 	// Bind routes
 	routes.PublicRoutes(application)
+	routes.AuthenticatedRoutes(application)
 
 	err := application.Listen(fmt.Sprintf(":%s", utils.GetEnv("APP_PORT", "8585")))
 
