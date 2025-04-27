@@ -12,7 +12,7 @@ import (
 )
 
 type UserController struct {
-	UserService services.UserService
+	UserService *services.UserService
 }
 
 func (controller UserController) Register(c *fiber.Ctx) error {

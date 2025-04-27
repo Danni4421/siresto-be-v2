@@ -8,12 +8,22 @@ import (
 )
 
 var userController *controllers.UserController
+var authController *controllers.AuthController
 
 func init() {
 	dbInstance := database.GetDatabase()
 
 	userController = &controllers.UserController{
-		UserService: services.UserService{
+		UserService: &services.UserService{
+			DB: dbInstance,
+		},
+	}
+
+	authController = &controllers.AuthController{
+		AuthService: &services.AuthService{
+			DB: dbInstance,
+		},
+		UserService: &services.UserService{
 			DB: dbInstance,
 		},
 	}
@@ -25,4 +35,7 @@ func PublicRoutes(app *fiber.App) {
 	// Default ping route
 	route.Get("/ping", controllers.Ping)
 	route.Post("/users", userController.Register)
+
+	// Authentication routes
+	route.Post("/login", authController.Login)
 }
