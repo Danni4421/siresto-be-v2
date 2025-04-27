@@ -6,10 +6,10 @@ import (
 )
 
 func AuthenticatedRoutes(app *fiber.App) {
-	route := app.Group("/api/v2")
+	route := app.Group("/api/v2", middlewares.JWTProtected())
 
-	route.Get("/users", middlewares.JWTProtected(), userController.GetUsers)
-	route.Get("/users/:id", middlewares.JWTProtected(), userController.GetUserByID)
-	route.Patch("/users/:id", middlewares.JWTProtected(), userController.UpdateUser)
-	route.Delete("/users/:id", middlewares.JWTProtected(), userController.DeleteUser)
+	route.Get("/users", userController.GetUsers)
+	route.Get("/users/:id", userController.GetUserByID)
+	route.Patch("/users/:id", userController.UpdateUser)
+	route.Delete("/users/:id", userController.DeleteUser)
 }
