@@ -1,6 +1,8 @@
 package services
 
 import (
+	"slices"
+
 	"github.com/Danni4421/siresto-be-v2/app/models"
 	"github.com/Danni4421/siresto-be-v2/package/exceptions"
 	"golang.org/x/crypto/bcrypt"
@@ -59,6 +61,22 @@ func (service *UserService) FindUserByEmail(email string) (*models.User, error) 
 	}
 
 	return user, nil
+}
+
+func (service *UserService) VerifyUserRole(userID string, role []models.UserRole) error {
+	user := &models.User{}
+
+	if err := service.DB.First(user, userID).Error; err != nil {
+		return exceptions.NewNotFound("User not found")
+	}
+
+	isAuthorized := slices.Contains(role, user.Role)
+
+	if !isAuthorized {
+		return exceptions.NewUnauthorized("You are not authorized to access this resource")
+	}
+
+	return nil
 }
 
 func (service *UserService) UpdateUser(id uint, user *models.User) (*models.User, error) {
