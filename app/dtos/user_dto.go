@@ -21,3 +21,18 @@ func (dto *CreateUserDTO) ErrorMessages() map[string]string {
 		"Password.max":      "Password must be at most 30 characters long",
 	}
 }
+
+type UpdateUserDTO struct {
+	Name    string `json:"name" validate:"omitempty,min=3,max=50"`
+	Phone   string `json:"phone" validate:"omitempty,max=15"`
+	Address string `json:"address" validate:"omitempty,max=255"`
+}
+
+func (dto *UpdateUserDTO) ErrorMessages() map[string]string {
+	return map[string]string{
+		"Name.min":    "Name must be at least 3 characters long",
+		"Name.max":    "Name must be at most 50 characters long",
+		"Phone.max":   "Phone must be exactly 15 characters long",
+		"Address.max": "Address must be at most 255 characters long",
+	}
+}

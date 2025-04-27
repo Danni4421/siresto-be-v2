@@ -16,7 +16,7 @@ type Validatable interface {
 
 func ParseAndValidate(c *fiber.Ctx, payload any) error {
 	if err := c.BodyParser(payload); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
+		return exceptions.NewBadRequest("Request unprocessable")
 	}
 
 	if err := validate.Struct(payload); err != nil {

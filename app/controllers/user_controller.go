@@ -6,6 +6,7 @@ import (
 	"github.com/Danni4421/siresto-be-v2/app/dtos"
 	"github.com/Danni4421/siresto-be-v2/app/models"
 	"github.com/Danni4421/siresto-be-v2/app/services"
+	"github.com/Danni4421/siresto-be-v2/package/exceptions"
 	"github.com/Danni4421/siresto-be-v2/package/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -68,13 +69,13 @@ func (controller UserController) GetUserByID(c *fiber.Ctx) error {
 	userID, err := strconv.ParseUint(c.Params("id"), 10, 32)
 
 	if err != nil {
-		return err
+		return exceptions.NewBadRequest("Invalid user ID")
 	}
 
 	user, err := controller.UserService.FindUserByID(uint(userID))
 
 	if err != nil {
-		return err
+		return exceptions.NewNotFound("User not found")
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -83,5 +84,57 @@ func (controller UserController) GetUserByID(c *fiber.Ctx) error {
 		"data": fiber.Map{
 			"user": user,
 		},
+	})
+}
+
+func (controller UserController) UpdateUser(c *fiber.Ctx) error {
+	userID, err := strconv.ParseUint(c.Params("id"), 10, 32)
+
+	if err != nil {
+		return exceptions.NewBadRequest("Invalid user ID")
+	}
+
+	updateUserDTO := new(dtos.UpdateUserDTO)
+
+	if err := utils.ParseAndValidate(c, updateUserDTO); err != nil {
+		return err
+	}
+
+	if updateUserDTO.Name == "" && updateUserDTO.Phone == "" && updateUserDTO.Address == "" {
+		return exceptions.NewBadRequest("Update payload is empty, at least one field must be provided")
+	}
+
+	_, err = controller.UserService.UpdateUser(uint(userID), &models.User{
+		Name:    updateUserDTO.Name,
+		Phone:   updateUserDTO.Phone,
+		Address: updateUserDTO.Address,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "User updated successfully",
+	})
+}
+
+func (controller UserController) DeleteUser(c *fiber.Ctx) error {
+	userID, err := strconv.ParseUint(c.Params("id"), 10, 32)
+
+	if err != nil {
+		return exceptions.NewBadRequest("Invalid user ID")
+	}
+
+	err = controller.UserService.DeleteUser(uint(userID))
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "User deleted successfully",
 	})
 }

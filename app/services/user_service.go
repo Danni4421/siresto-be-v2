@@ -50,3 +50,41 @@ func (service *UserService) FindUserByID(id uint) (*models.User, error) {
 	}
 	return user, nil
 }
+
+func (service *UserService) UpdateUser(id uint, user *models.User) (*models.User, error) {
+	existingUser, err := service.FindUserByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Name != "" {
+		existingUser.Name = user.Name
+	}
+
+	if user.Phone != "" {
+		existingUser.Phone = user.Phone
+	}
+
+	if user.Address != "" {
+		existingUser.Address = user.Address
+	}
+
+	if err := service.DB.Save(existingUser).Error; err != nil {
+		return nil, err
+	}
+
+	return existingUser, nil
+}
+
+func (service *UserService) DeleteUser(id uint) error {
+	user := &models.User{}
+	if err := service.DB.First(user, id).Error; err != nil {
+		return exceptions.NewNotFound("User not found")
+	}
+
+	if err := service.DB.Delete(user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
