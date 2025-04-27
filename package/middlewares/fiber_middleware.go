@@ -15,4 +15,17 @@ func FiberMiddleware(app *fiber.App) {
 		}),
 		logger.New(),
 	)
+
+	app.Use(func(c *fiber.Ctx) error {
+		defer func() {
+			if err := recover(); err != nil {
+				c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"status":  "fail",
+					"message": "Internal Server Error",
+				})
+			}
+		}()
+
+		return c.Next()
+	})
 }

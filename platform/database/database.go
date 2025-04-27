@@ -2,13 +2,22 @@ package database
 
 import (
 	"fmt"
-
 	"github.com/Danni4421/siresto-be-v2/package/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func ConnectDB() (*gorm.DB, error) {
+var dbInstance *gorm.DB
+
+func init() {
+	err := connectDB(&dbInstance)
+
+	if err != nil {
+		panic("failed to connect database")
+	}
+}
+
+func connectDB(db **gorm.DB) error {
 	host := utils.GetEnv("DB_HOST", "localhost")
 	port := utils.GetEnv("DB_PORT", "5432")
 	user := utils.GetEnv("DB_USERNAME", "postgres")
@@ -20,11 +29,17 @@ func ConnectDB() (*gorm.DB, error) {
 		host, user, password, dbname, port,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	d, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	*db = d
+
+	return nil
+}
+
+func GetDatabase() *gorm.DB {
+	return dbInstance
 }

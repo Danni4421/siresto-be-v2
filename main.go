@@ -10,32 +10,27 @@ import (
 	"github.com/Danni4421/siresto-be-v2/platform/database"
 	"github.com/Danni4421/siresto-be-v2/platform/migrations"
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	godotenv.Load()
+	fiberConfig := configs.FiberConfig()
 
-	configs := configs.FiberConfig()
+	application := fiber.New(fiberConfig)
 
-	app := fiber.New(configs)
+	databaseInstance := database.GetDatabase()
+	migrationError := migrations.AutoMigrate(databaseInstance)
 
-	// Auto migrations
-	db, db_err := database.ConnectDB()
-
-	if db_err != nil {
-		panic(db_err)
+	if migrationError != nil {
+		panic("Error migrating system database")
 	}
 
-	migrations.AutoMigrate(db)
-
 	// Bind middlewares
-	middlewares.FiberMiddleware(app)
+	middlewares.FiberMiddleware(application)
 
 	// Bind routes
-	routes.PublicRoutes(app)
+	routes.PublicRoutes(application)
 
-	err := app.Listen(fmt.Sprintf(":%s", utils.GetEnv("APP_PORT", "8585")))
+	err := application.Listen(fmt.Sprintf(":%s", utils.GetEnv("APP_PORT", "8585")))
 
 	if err != nil {
 		panic(err)
