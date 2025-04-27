@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -19,6 +21,7 @@ func FiberMiddleware(app *fiber.App) {
 	app.Use(func(c *fiber.Ctx) error {
 		defer func() {
 			if err := recover(); err != nil {
+				fmt.Println(err)
 				c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 					"status":  "fail",
 					"message": "Internal Server Error",

@@ -9,6 +9,7 @@ func AutoMigrate(db *gorm.DB) error {
 	// Auto migrate models
 	err := db.AutoMigrate(
 		&models.User{},
+		&models.Authentication{},
 	)
 
 	if err != nil {

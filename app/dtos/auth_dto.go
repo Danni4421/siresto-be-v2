@@ -14,3 +14,13 @@ func (dto *AuthDTO) ErrorMessages() map[string]string {
 		"Password.max":      "Password must be at most 30 characters long",
 	}
 }
+
+type RefreshTokenDTO struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
+}
+
+func (dto *RefreshTokenDTO) ErrorMessages() map[string]string {
+	return map[string]string{
+		"RefreshToken.required": "Refresh token is required",
+	}
+}

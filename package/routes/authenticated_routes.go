@@ -8,6 +8,8 @@ import (
 func AuthenticatedRoutes(app *fiber.App) {
 	route := app.Group("/api/v2", middlewares.JWTProtected())
 
+	route.Delete("/logout", authController.Logout)
+
 	route.Get("/users", userController.GetUsers)
 	route.Get("/users/:id", userController.GetUserByID)
 	route.Patch("/users/:id", userController.UpdateUser)
