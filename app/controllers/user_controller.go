@@ -94,6 +94,12 @@ func (controller UserController) UpdateUser(c *fiber.Ctx) error {
 		return exceptions.NewBadRequest("Invalid user ID")
 	}
 
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if authorizedUserID != uint(userID) {
+		return exceptions.NewUnauthorized("You are not authorized to update this user")
+	}
+
 	updateUserDTO := new(dtos.UpdateUserDTO)
 
 	if err := utils.ParseAndValidate(c, updateUserDTO); err != nil {
@@ -125,6 +131,12 @@ func (controller UserController) DeleteUser(c *fiber.Ctx) error {
 
 	if err != nil {
 		return exceptions.NewBadRequest("Invalid user ID")
+	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if authorizedUserID != uint(userID) {
+		return exceptions.NewUnauthorized("You are not authorized to delete this user")
 	}
 
 	err = controller.UserService.DeleteUser(uint(userID))
