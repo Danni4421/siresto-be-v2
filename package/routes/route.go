@@ -8,6 +8,7 @@ import (
 
 var userController *controllers.UserController
 var authController *controllers.AuthController
+var menuCategoryController *controllers.MenuCategoryController
 
 func init() {
 	dbInstance := database.GetDatabase()
@@ -26,4 +27,11 @@ func init() {
 			DB: dbInstance,
 		},
 	}
+
+	menuCategoryController = &controllers.MenuCategoryController{
+		MenuCategoryService: &services.MenuCategoryService{
+			DB: dbInstance,
+		},
+	}
+
 }

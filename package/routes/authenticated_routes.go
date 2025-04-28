@@ -14,4 +14,8 @@ func AuthenticatedRoutes(app *fiber.App) {
 	route.Get("/users/:id", userController.GetUserByID)
 	route.Patch("/users/:id", userController.UpdateUser)
 	route.Delete("/users/:id", userController.DeleteUser)
+
+	route.Post("/menu-categories", menuCategoryController.CreateCategory)
+	route.Put("/menu-categories/:id", menuCategoryController.UpdateCategory)
+	route.Delete("/menu-categories/:id", menuCategoryController.DeleteCategory)
 }

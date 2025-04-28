@@ -15,4 +15,7 @@ func PublicRoutes(app *fiber.App) {
 	// Authentication routes
 	route.Post("/login", authController.Login)
 	route.Put("/refresh-token", authController.RefreshToken)
+
+	route.Get("/menu-categories", menuCategoryController.GetAllCategories)
+	route.Get("/menu-categories/:id", menuCategoryController.GetCategoryByID)
 }
