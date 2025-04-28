@@ -41,7 +41,7 @@ func (s *MenuCategoryService) GetAllCategories() ([]models.MenuCategory, error) 
 
 func (s *MenuCategoryService) GetCategoryByID(id int16) (*models.MenuCategory, error) {
 	var category models.MenuCategory
-	if err := s.DB.First(&category, id).Error; err != nil {
+	if err := s.DB.Preload("Menus").First(&category, id).Error; err != nil {
 		return nil, err
 	}
 

@@ -18,4 +18,8 @@ func AuthenticatedRoutes(app *fiber.App) {
 	route.Post("/menu-categories", menuCategoryController.CreateCategory)
 	route.Put("/menu-categories/:id", menuCategoryController.UpdateCategory)
 	route.Delete("/menu-categories/:id", menuCategoryController.DeleteCategory)
+
+	route.Post("/menus", menuController.CreateMenu)
+	route.Put("/menus/:id", menuController.UpdateMenu)
+	route.Delete("/menus/:id", menuController.DeleteMenu)
 }

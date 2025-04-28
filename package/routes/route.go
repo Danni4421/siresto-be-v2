@@ -6,32 +6,35 @@ import (
 	"github.com/Danni4421/siresto-be-v2/platform/database"
 )
 
-var userController *controllers.UserController
-var authController *controllers.AuthController
-var menuCategoryController *controllers.MenuCategoryController
+var (
+	userController         *controllers.UserController
+	authController         *controllers.AuthController
+	menuCategoryController *controllers.MenuCategoryController
+	menuController         *controllers.MenuController
+)
 
 func init() {
 	dbInstance := database.GetDatabase()
-
+	
+	// Create services once and reuse them
+	userService := &services.UserService{DB: dbInstance}
+	menuCategoryService := &services.MenuCategoryService{DB: dbInstance}
+	
 	userController = &controllers.UserController{
-		UserService: &services.UserService{
-			DB: dbInstance,
-		},
+		UserService: userService,
 	}
 
 	authController = &controllers.AuthController{
-		AuthService: &services.AuthService{
-			DB: dbInstance,
-		},
-		UserService: &services.UserService{
-			DB: dbInstance,
-		},
+		AuthService: &services.AuthService{DB: dbInstance},
+		UserService: userService,
 	}
 
 	menuCategoryController = &controllers.MenuCategoryController{
-		MenuCategoryService: &services.MenuCategoryService{
-			DB: dbInstance,
-		},
+		MenuCategoryService: menuCategoryService,
 	}
 
+	menuController = &controllers.MenuController{
+		MenuService: &services.MenuService{DB: dbInstance},
+		MenuCategoryService: menuCategoryService,
+	}
 }

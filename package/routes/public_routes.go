@@ -18,4 +18,7 @@ func PublicRoutes(app *fiber.App) {
 
 	route.Get("/menu-categories", menuCategoryController.GetAllCategories)
 	route.Get("/menu-categories/:id", menuCategoryController.GetCategoryByID)
+	
+	route.Get("/menus", menuController.GetMenus)
+	route.Get("/menus/:id", menuController.GetMenuByID)
 }
