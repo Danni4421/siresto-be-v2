@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/Danni4421/siresto-be-v2/app/dtos"
@@ -65,11 +64,9 @@ func (m *MenuCategoryController) GetCategoryByID(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid category ID")
 	}
 
-	fmt.Println("Category ID: ",categoryID)
-
 	category, err := m.MenuCategoryService.GetCategoryByID(int16(categoryID))
 	if err != nil {
-		return exceptions.NewInternalServerError("Failed to retrieve category")
+		return exceptions.NewNotFound("Menu category not found")
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{

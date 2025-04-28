@@ -73,7 +73,7 @@ func (service *UserService) VerifyUserRole(userID uint, roles []models.UserRole)
 	isAuthorized := slices.Contains(roles, user.Role)
 
 	if !isAuthorized {
-		return exceptions.NewUnauthorized("You are not authorized to access this resource")
+		return exceptions.NewForbidden("You are not authorized to access this resource")
 	}
 
 	return nil
