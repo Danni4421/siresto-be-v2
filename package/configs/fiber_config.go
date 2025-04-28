@@ -33,6 +33,7 @@ func FiberConfig() fiber.Config {
 					code = fiberErr.Code
 				}
 				return c.Status(code).JSON(fiber.Map{
+					"status":  "error",
 					"message": err.Error(),
 				})
 			}

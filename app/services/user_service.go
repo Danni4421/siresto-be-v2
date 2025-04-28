@@ -63,14 +63,14 @@ func (service *UserService) FindUserByEmail(email string) (*models.User, error) 
 	return user, nil
 }
 
-func (service *UserService) VerifyUserRole(userID string, role []models.UserRole) error {
+func (service *UserService) VerifyUserRole(userID uint, roles []models.UserRole) error {
 	user := &models.User{}
 
 	if err := service.DB.First(user, userID).Error; err != nil {
 		return exceptions.NewNotFound("User not found")
 	}
 
-	isAuthorized := slices.Contains(role, user.Role)
+	isAuthorized := slices.Contains(roles, user.Role)
 
 	if !isAuthorized {
 		return exceptions.NewUnauthorized("You are not authorized to access this resource")

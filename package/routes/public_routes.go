@@ -11,6 +11,7 @@ func PublicRoutes(app *fiber.App) {
 	// Default ping route
 	route.Get("/ping", controllers.Ping)
 	route.Post("/users", userController.Register)
+	route.Post("/users/admin", userController.CreateAdminUser)
 
 	// Authentication routes
 	route.Post("/login", authController.Login)

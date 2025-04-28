@@ -11,6 +11,8 @@ func AuthenticatedRoutes(app *fiber.App) {
 	route.Delete("/logout", authController.Logout)
 
 	route.Get("/users", userController.GetUsers)
+	route.Post("/users/internal", userController.CreateInternalUser)
+	
 	route.Get("/users/:id", userController.GetUserByID)
 	route.Patch("/users/:id", userController.UpdateUser)
 	route.Delete("/users/:id", userController.DeleteUser)

@@ -49,6 +49,78 @@ func (controller UserController) Register(c *fiber.Ctx) error {
 	})
 }
 
+func (controller UserController) CreateInternalUser(c *fiber.Ctx) error {
+	createInternalUserDTO := new(dtos.CreateInternalUserDTO)
+
+	if err := utils.ParseAndValidate(c, createInternalUserDTO); err != nil {
+		return err
+	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := controller.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleAdmin}); err != nil {
+		return err
+	}
+
+	user, err := controller.UserService.CreateUser(&models.User{
+		Name:     createInternalUserDTO.Name,
+		Phone:    createInternalUserDTO.Phone,
+		Email:    createInternalUserDTO.Email,
+		Password: createInternalUserDTO.Password,
+		Role:     models.UserRole(createInternalUserDTO.Role),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Internal user created successfully",
+		"data": fiber.Map{
+			"user": user,
+		},
+	})
+}
+
+func (controller UserController) CreateAdminUser(c *fiber.Ctx) error {
+	createAdminUserDTO := new(dtos.CreateAdminUserDTO)
+
+	if err := utils.ParseAndValidate(c, createAdminUserDTO); err != nil {
+		return err
+	}
+
+	appPassword := utils.GetEnv("APP_PASSWORD", "")
+
+	if appPassword == "" {
+		return exceptions.NewInternalServerError("There is an error with the system, please contact the administrator")
+	}
+
+	if createAdminUserDTO.AppPassword != appPassword {
+		return exceptions.NewUnauthorized("Invalid app password")
+	}
+
+	user, err := controller.UserService.CreateUser(&models.User{
+		Name:     createAdminUserDTO.Name,
+		Phone:    createAdminUserDTO.Phone,
+		Email:    createAdminUserDTO.Email,
+		Password: createAdminUserDTO.Password,
+		Role:     models.RoleAdmin,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Admin user created successfully",
+		"data": fiber.Map{
+			"user": user,
+		},
+	})
+}
+
 func (controller UserController) GetUsers(c *fiber.Ctx) error {
 	users, err := controller.UserService.FindUsers()
 

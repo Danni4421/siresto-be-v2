@@ -16,7 +16,6 @@ var (
 func init() {
 	dbInstance := database.GetDatabase()
 	
-	// Create services once and reuse them
 	userService := &services.UserService{DB: dbInstance}
 	menuCategoryService := &services.MenuCategoryService{DB: dbInstance}
 	
@@ -31,10 +30,12 @@ func init() {
 
 	menuCategoryController = &controllers.MenuCategoryController{
 		MenuCategoryService: menuCategoryService,
+		UserService: userService,
 	}
 
 	menuController = &controllers.MenuController{
 		MenuService: &services.MenuService{DB: dbInstance},
 		MenuCategoryService: menuCategoryService,
+		UserService: userService,
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/Danni4421/siresto-be-v2/app/dtos"
+	"github.com/Danni4421/siresto-be-v2/app/models"
 	"github.com/Danni4421/siresto-be-v2/app/services"
 	"github.com/Danni4421/siresto-be-v2/package/exceptions"
 	"github.com/Danni4421/siresto-be-v2/package/utils"
@@ -13,6 +14,7 @@ import (
 type MenuController struct {
 	MenuService *services.MenuService
 	MenuCategoryService *services.MenuCategoryService
+	UserService *services.UserService
 }
 
 func (controller MenuController) CreateMenu(c *fiber.Ctx) error {
@@ -21,6 +23,13 @@ func (controller MenuController) CreateMenu(c *fiber.Ctx) error {
 	if err := utils.ParseAndValidate(c, createMenuDTO); err != nil {
 		return err
 	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := controller.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
+		return err
+	}
+
 
 	if len(createMenuDTO.Categories) == 0 {
 		return exceptions.NewBadRequest("At least one category must be provided")
@@ -91,6 +100,12 @@ func (controller MenuController) UpdateMenu(c *fiber.Ctx) error {
 		return err
 	}
 
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := controller.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
+		return err
+	}
+
 	menuID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid menu ID")
@@ -114,6 +129,12 @@ func (controller MenuController) DeleteMenu(c *fiber.Ctx) error {
 	menuID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid menu ID")
+	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := controller.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
+		return err
 	}
 
 	err = controller.MenuService.DeleteMenu(uint(menuID))

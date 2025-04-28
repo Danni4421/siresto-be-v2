@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Danni4421/siresto-be-v2/app/dtos"
+	"github.com/Danni4421/siresto-be-v2/app/models"
 	"github.com/Danni4421/siresto-be-v2/app/services"
 	"github.com/Danni4421/siresto-be-v2/package/exceptions"
 	"github.com/Danni4421/siresto-be-v2/package/utils"
@@ -13,11 +14,18 @@ import (
 
 type MenuCategoryController struct {
 	MenuCategoryService *services.MenuCategoryService
+	UserService *services.UserService
 }
 
 func (m *MenuCategoryController) CreateCategory(c *fiber.Ctx) error {
 	createMenuCategoryDTO := new(dtos.MenuCategoryDTO)
 	if err := utils.ParseAndValidate(c, createMenuCategoryDTO); err != nil {
+		return err
+	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := m.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
 		return err
 	}
 
@@ -80,6 +88,13 @@ func (m *MenuCategoryController) UpdateCategory(c *fiber.Ctx) error {
 		return err
 	}
 
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := m.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
+		return err
+	}
+
+
 	categoryID, err := strconv.Atoi(c.Params("id"))
 
 	if err != nil {
@@ -107,6 +122,13 @@ func (m *MenuCategoryController) DeleteCategory(c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid category ID")
 	}
+
+	authorizedUserID := uint(c.Locals("userID").(float64))
+
+	if err := m.UserService.VerifyUserRole(authorizedUserID, []models.UserRole{models.RoleManager, models.RoleAdmin}); err != nil {
+		return err
+	}
+
 
 	err = m.MenuCategoryService.DeleteCategory(int16(categoryID))
 	if err != nil {
