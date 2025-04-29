@@ -12,7 +12,7 @@ func AuthenticatedRoutes(app *fiber.App) {
 
 	route.Get("/users", userController.GetUsers)
 	route.Post("/users/internal", userController.CreateInternalUser)
-	
+
 	route.Get("/users/:id", userController.GetUserByID)
 	route.Patch("/users/:id", userController.UpdateUser)
 	route.Delete("/users/:id", userController.DeleteUser)
@@ -24,4 +24,8 @@ func AuthenticatedRoutes(app *fiber.App) {
 	route.Post("/menus", menuController.CreateMenu)
 	route.Put("/menus/:id", menuController.UpdateMenu)
 	route.Delete("/menus/:id", menuController.DeleteMenu)
+
+	route.Post("/transactions", transactionController.CreateTransaction)
+	route.Get("/transactions", transactionController.GetTransactions)
+	route.Get("/transactions/:id", transactionController.GetTransactionByID)
 }

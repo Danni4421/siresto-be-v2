@@ -48,25 +48,25 @@ func (dto *CreateInternalUserDTO) ErrorMessages() map[string]string {
 }
 
 type CreateAdminUserDTO struct {
-	Name     string `json:"name" validate:"required,min=3,max=50"`
-	Phone    string `json:"phone" validate:"required,max=15"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=8,max=30"`
+	Name        string `json:"name" validate:"required,min=3,max=50"`
+	Phone       string `json:"phone" validate:"required,max=15"`
+	Email       string `json:"email" validate:"required,email"`
+	Password    string `json:"password" validate:"required,min=8,max=30"`
 	AppPassword string `json:"app_password" validate:"required"`
 }
 
 func (dto *CreateAdminUserDTO) ErrorMessages() map[string]string {
 	return map[string]string{
-		"Name.required":     "Name is required",
-		"Name.min":          "Name must be at least 3 characters long",
-		"Name.max":          "Name must be at most 50 characters long",
-		"Phone.required":    "Phone is required",
-		"Phone.max":         "Phone must be exactly 15 characters long",
-		"Email.required":    "Email is required",
-		"Email.email":       "Email is not a valid email",
-		"Password.required": "Password is required",
-		"Password.min":      "Password must be at least 8 characters long",
-		"Password.max":      "Password must be at most 30 characters long",
+		"Name.required":        "Name is required",
+		"Name.min":             "Name must be at least 3 characters long",
+		"Name.max":             "Name must be at most 50 characters long",
+		"Phone.required":       "Phone is required",
+		"Phone.max":            "Phone must be exactly 15 characters long",
+		"Email.required":       "Email is required",
+		"Email.email":          "Email is not a valid email",
+		"Password.required":    "Password is required",
+		"Password.min":         "Password must be at least 8 characters long",
+		"Password.max":         "Password must be at most 30 characters long",
 		"AppPassword.required": "App password is required",
 	}
 }
@@ -84,4 +84,12 @@ func (dto *UpdateUserDTO) ErrorMessages() map[string]string {
 		"Phone.max":   "Phone must be exactly 15 characters long",
 		"Address.max": "Address must be at most 255 characters long",
 	}
+}
+
+type UserResponseDTO struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Phone   string `json:"phone"`
+	Address string `json:"address"`
+	Email   string `json:"email"`
 }

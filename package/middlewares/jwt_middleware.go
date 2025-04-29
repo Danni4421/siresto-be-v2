@@ -36,8 +36,6 @@ func JWTProtected() fiber.Handler {
 
 		claims, err := utils.ValidateToken(authToken, jwtSecret)
 
-		fmt.Println(err)
-
 		if err != nil {
 			return exceptions.NewUnauthorized("Invalid token")
 		}
